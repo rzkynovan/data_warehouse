@@ -10,8 +10,8 @@ create table Periode (
     id bigint unsigned auto_increment primary key,
     nama enum ('Genap', 'Ganjil') not null,
     tahun year,
-    tanggal_mulai datetime,
-    tanggal_berakhir datetime,
+    tanggal_mulai datetime not null,
+    tanggal_berakhir datetime not null,
     created_at datetime default NOW(),
     updated_at datetime default NOW()
 
@@ -106,14 +106,22 @@ create table Kelas(
     updated_at datetime default NOW(),
     matakuliah_id bigint unsigned not null,
     dosen_utama_id bigint unsigned,
-    dosen_id bigint unsigned,
     jenjang_id bigint unsigned not null,
     foreign key (matakuliah_id) references MataKuliah(id),
     foreign key (dosen_utama_id) references Dosen(id),
-    foreign key (dosen_id) references Dosen(id),
     foreign key (jenjang_id) references Jenjang(id),
     check (kelas_mbkm = true or (kapasitas between 1 and 40)),
     check ((kelas_mbkm = false and dosen_utama_id is not null) or (kelas_mbkm = true))
+);
+
+drop table if exists TeamTeaching;
+create table TeamTeaching(
+    id bigint unsigned auto_increment primary key,
+    dosen_id bigint unsigned not null,
+    kelas_id bigint unsigned not null,
+    foreign key (dosen_id) references Dosen(id),
+    foreign key (kelas_id) references Kelas(id)
+
 );
 
 drop table if exists FRS;
